@@ -1,0 +1,12 @@
+{
+  "question": [
+    { "text": "Speak in English. Go to (0, -1, 3, 270) and tell me what you see." },
+    { "text": "OK! Get back to (0, 0, 3)." },
+    { "text": "Stop and tell me what you have explored now." },
+    { "text": "Fly above the bottle." },
+    { "text": "The drone is currently at (0, 0, 3)m with yaw 0° (positive x-axis). Please rotate the drone to explore the areas around its four sides and summarize what the camera sees." },
+    { "text": "The drone is currently at (-60, 0, 10)m with yaw 0° (positive x-axis).\nYou are on a road at the edge of a city. This city has six neatly arranged blocks, seven roads, and twelve intersections. The vertical roads are at y = -40, 0, 40; the horizontal roads are at x = -60, -15, 45, 110. Please traverse all road segments and use the **camera tool** to search for a pavilion. You must fly strictly along the roads and must not go outside the city boundaries. When observing, the drone must face toward the inside of the city, not the outside.\nYou **must include step-by-step thinking (bullet points)** in every message, and flexibly design both the route and orientation to plan an efficient search path (within 120 English words).\nYour thinking should include, but not be limited to:\n1. How you design and plan the search route;\n2. Always considering whether the camera is capturing only scenery, which means you are facing outside the city (in that case, change yaw in place). Do not move x/y in the wrong direction — stay on the roads to avoid hitting buildings. **After every movement you must call the vlm tool**;\n3. Whether the search is completed."},
+    { "text": "Your car is equipped with a robotic arm. Please control it to return to (0, 0)m, yaw 0°, and then:\n1. Rotate the car to explore **all four sides** and find **a person sitting next to a chair**;\n2. Go to the person (x + 1, y), listen to the task they give you, and complete the task;\n3. Return to the origin." },
+    { "text": "The quadruped robot is currently at (0, 0)m. Observe the current scene and walk to the chair (note: your final x must be -1.0m relative to the chair's x position)." }
+  ]
+}

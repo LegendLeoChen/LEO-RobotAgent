@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="mylogo.png" type="image/png">
+    <title>LEO-RobotAgent</title>
+    <script src="https://cdn.jsdelivr.net/npm/roslib/build/roslib.min.js"></script>
+    <link id="themeStyle" rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Left bar: top = task buttons, bottom = camera panel -->
+    <div id="left-bar">
+        <div id="control">
+            <h3>🕹️ System
+                <button id="add-btn">➕</button>
+                <span id="server-status" class="status-indicator"></span>
+                <button id="modeToggle">☀️</button>
+            </h3>
+            <div id="task-buttons"></div>
+        </div>
+        <hr>
+        <div id="camera">
+            <h3>📷 Camera
+                <button id="refresh-btn">🔄</button>
+                <select id="camera-select">
+                    <option value="">Choose the topic with images</option>
+                </select>
+            </h3>
+            <img id="camera-feed" width="100%" src="" onerror=" handleCameraError()" />
+        </div>
+        <div id="tools-panel">
+            <h3>🧰 Tools
+                <span id="tool-usage" class="tooltip" data-tooltip="Restart agent node after modifying.">❓</span>
+            </h3>
+            <div id="tools-container">
+                <table id="tools-table">
+                    <thead>
+                        <tr>
+                            <th>Chosen</th>
+                            <th>Name</th>
+                            <th>Function</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tools-body"></tbody>
+                </table>
+            </div>
+            <div class="tools-actions">
+                <button id="add-tool">Add</button>
+                <button id="save-tools">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup window for creating a new task -->
+    <div id="popup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <h3>➕ New command</h3>
+            <label>Name:</label><input id="task-name" type="text" placeholder="Name of the button" /><br>
+            <label>Command:</label><input id="task-cmd" type="text" placeholder="Command of terminal, e.g., source ./devel/setup.bash && rosrun ..." /><br>
+            <label>Params:</label><input id="task-args" type="text" placeholder="Optional parameters, e.g., port:=9091" /><br>
+            <button id="save-task">Save</button>
+            <button id="cancel-task">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Right side: chat box on top, input box on bottom -->
+    <div id="main">
+        <h3>🤖 LEO-RobotAgent — Chat
+            <span id="agent-status" class="status-indicator"></span>
+        </h3>
+        <div id="chat-box"></div>
+        <div id="input-area">
+            <div id="input-wrapper">
+                <ul id="predefined-tasks"></ul>
+                <textarea id="user-input" placeholder="Input the task or command..."></textarea>
+            </div>
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- Dark mode switch -->
+    <script>
+        const toggleBtn = document.getElementById('modeToggle');
+
+        // Read theme from localStorage (default: dark)
+        let currentTheme = localStorage.getItem('mode') || 'dark';
+
+        // Apply theme
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            toggleBtn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('mode', currentTheme);
+        }
+
+        // Toggle button
+        toggleBtn.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+        });
+
+        // Init
+        applyTheme();
+    </script>
+
+    <!-- Left-top task button logic -->
+    <script>
+        const SERVICE_URL = "http://localhost:5000/tasks"; // Backend API that returns JSON file
+
+        // Fetch buttons from backend
+        function loadButtonsFromServer() {
+            fetch(SERVICE_URL)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById("task-buttons");
+                    container.innerHTML = "";                                   // Clear old buttons
+                    data.buttons.forEach(btn => {
+                        const button = document.createElement("button");
+                        button.textContent = btn.label;
+                        button.onclick = () => startProcess(btn.cmd, btn.args || "");
+                        container.appendChild(button);
+                    });
+                })
+                .catch(err => console.error("fail to fetch the task:", err));
+        }
+
+        // Click "+" to open popup
+        document.getElementById("add-btn").onclick = () => {
+            document.getElementById("popup").style.display = "flex";
+        };
+
+        // Cancel button closes popup
+        document.getElementById("cancel-task").onclick = () => {
+            document.getElementById("popup").style.display = "none";
+        };
+
+        // Save new task
+        document.getElementById("save-task").onclick = () => {
+            const name = document.getElementById("task-name").value.trim();
+            const cmd = document.getElementById("task-cmd").value.trim();
+            const args = document.getElementById("task-args").value.trim();
+
+            if (!name || !cmd) {
+                alert("⚠️ name and cmd are required.");
+                return;
+            }
+
+            const newTask = { label: name, cmd: cmd };
+            if (args) newTask.args = args;
+
+            // POST new task to backend
+            fetch(SERVICE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newTask)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("✅ Save successfully.");
+                        document.getElementById("popup").style.display = "none";
+                        loadButtonsFromServer(); // Reload buttons
+                    } else {
+                        alert("❌ Failed：" + data.msg);
+                    }
+                })
+                .catch(err => alert("❌ Failed to request：" + err));
+        };
+
+        // Auto load buttons
+        window.addEventListener("load", loadButtonsFromServer);
+
+        // Launch service command
+        function startProcess(target, args = "") {
+            fetch("http://localhost:5000/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, args })
+            })
+                .then(res => res.json())
+                .then(data => showToast(data.msg))
+                .catch(err => alert("Failed to start：" + err));
+        }
+
+        function showToast(message, duration = 2500) {
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Delay show animation
+            setTimeout(() => toast.classList.add("show"), 50);
+
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+    </script>
+
+    <!-- Tools logic -->
+    <script>
+        const toolsBody = document.getElementById("tools-body");
+        const addBtn = document.getElementById("add-tool");
+        const saveBtn = document.getElementById("save-tools");
+
+        // 🚀 Fetch tools from backend
+        async function loadTools() {
+            const res = await fetch("http://localhost:5000/tools");
+            const data = await res.json();
+            renderTools(data.tools);
+        }
+
+        // 🎨 Render tools table
+        function renderTools(tools) {
+            toolsBody.innerHTML = "";
+            tools.forEach(tool => {
+                const row = document.createElement("tr");
+
+                // Activation state
+                const activeCell = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = tool.activation;
+                activeCell.appendChild(checkbox);
+                row.appendChild(activeCell);
+
+                // Name
+                const nameCell = document.createElement("td");
+                nameCell.textContent = tool.name;
+                nameCell.classList.add("editable");
+                nameCell.ondblclick = () => makeEditable(nameCell);
+                row.appendChild(nameCell);
+
+                // Function
+                const funcCell = document.createElement("td");
+                funcCell.textContent = tool.func;
+                funcCell.classList.add("editable");
+                funcCell.ondblclick = () => makeEditable(funcCell);
+                row.appendChild(funcCell);
+
+                // Description
+                const descCell = document.createElement("td");
+                descCell.textContent = tool.description;
+                descCell.classList.add("editable");
+                descCell.ondblclick = () => makeEditable(descCell);
+                row.appendChild(descCell);
+
+                toolsBody.appendChild(row);
+            });
+        }
+
+        // ✏️ Enable cell editing on double click
+        function makeEditable(cell) {
+            const oldValue = cell.textContent;
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = oldValue;
+            input.style.width = "95%";
+            cell.textContent = "";
+            cell.appendChild(input);
+            input.focus();
+
+            input.addEventListener("blur", () => {
+                cell.textContent = input.value.trim() || oldValue;
+            });
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") input.blur();
+            });
+        }
+
+        // ➕ Add new tool
+        addBtn.addEventListener("click", () => {
+            const row = document.createElement("tr");
+
+            const activeCell = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            activeCell.appendChild(checkbox);
+            row.appendChild(activeCell);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = "new_tool";
+            nameCell.classList.add("editable");
+            nameCell.ondblclick = () => makeEditable(nameCell);
+            row.appendChild(nameCell);
+
+            const funcCell = document.createElement("td");
+            funcCell.textContent = "self.your_function";
+            funcCell.classList.add("editable");
+            funcCell.ondblclick = () => makeEditable(funcCell);
+            row.appendChild(funcCell);
+
+            const descCell = document.createElement("td");
+            descCell.textContent = "description...";
+            descCell.classList.add("editable");
+            descCell.ondblclick = () => makeEditable(descCell);
+            row.appendChild(descCell);
+
+            toolsBody.appendChild(row);
+        });
+
+        // 💾 Save tool modifications
+        saveBtn.addEventListener("click", async () => {
+            const rows = toolsBody.querySelectorAll("tr");
+            const updatedTools = [];
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                updatedTools.push({
+                    activation: cells[0].querySelector("input").checked,
+                    name: cells[1].textContent.trim(),
+                    func: cells[2].textContent.trim(),
+                    description: cells[3].textContent.trim()
+                });
+            });
+
+            const res = await fetch("http://localhost:5000/tools", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tools: updatedTools })
+            });
+
+            const data = await res.json();
+            showToast(data.msg || "✅ Saved!");
+        });
+
+        // Load tools at page load
+        window.addEventListener("load", loadTools);
+
+    </script>
+
+    <!-- Chat section -->
+    <script>
+        const textarea = document.getElementById('user-input');
+        const suggestionList = document.getElementById('predefined-tasks');
+        let suggestions = [];
+
+        // Load suggestions (same logic)
+        fetch("http://localhost:5000/questions")
+            .then(res => res.json())
+            .then(data => {
+                suggestions = data.question.map(q => q.text);
+            })
+            .catch(err => console.error("Failed to fetch the preset questions:", err));
+
+        // Auto resize text area
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            updateSuggestions(this.value.trim());
+        });
+        function autoResize() {
+            textarea.style.height = "auto";
+            textarea.style.height = Math.min(textarea.scrollHeight, 150) + "px";
+        }
+
+        textarea.addEventListener("input", autoResize);
+
+        // On focus → show suggestions
+        textarea.addEventListener('focus', function () {
+            updateSuggestions(this.value.trim());
+        });
+
+        // Fuzzy matching
+        function updateSuggestions(text) {
+            suggestionList.innerHTML = '';
+
+            const matches = text
+                ? suggestions.filter(item => item.includes(text))
+                : suggestions.slice(0, 30);
+
+            if (matches.length === 0) {
+                suggestionList.style.display = 'none';
+                return;
+            }
+
+            matches.forEach(task => {
+                const li = document.createElement('li');
+                li.textContent = task;
+                li.title = task;
+                li.addEventListener('click', () => {
+                    textarea.value = task;
+                    suggestionList.style.display = 'none';
+                    textarea.style.height = 'auto';
+                    textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
+                });
+                suggestionList.appendChild(li);
+            });
+
+            suggestionList.style.display = 'block';
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#input-wrapper')) {
+                suggestionList.style.display = 'none';
+            }
+        });
+
+        // Check agent status every 3 seconds
+        setInterval(() => {
+            fetch('http://localhost:5000/agent_status')
+                .then(res => res.json())
+                .then(data => {
+                    const indicator = document.getElementById('agent-status');
+                    if (data.running) {
+                        indicator.classList.add('active');
+                        indicator.title = 'agent running';
+                    } else {
+                        indicator.classList.remove('active');
+                        indicator.title = 'agent stopped';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('agent-status').classList.remove('active');
+                });
+        }, 3000);
+
+        // Chat display
+        const chatBox = document.getElementById("chat-box");
+        function addMessage(role, text, type) {
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("chat-msg", role === "user" ? "user" : "assistant");
+
+            const bubble = document.createElement("div");
+            bubble.classList.add("chat-bubble");
+
+            if (type === "Answer") bubble.style.backgroundColor = "#2ECC29";
+            else if (type === "Output") bubble.style.backgroundColor = "#2196F3";
+            else if (type === "Observation") bubble.style.backgroundColor = "#FFC107";
+
+            bubble.textContent = text;
+            msgDiv.appendChild(bubble);
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Send command
+        document.getElementById("send-btn").onclick = () => {
+            const input = document.getElementById("user-input");
+            const text = input.value.trim();
+            if (text && cmdPub) {
+                cmdPub.publish({ data: text });
+                input.value = "";
+                input.style.height = "auto";
+            } else {
+                alert("⚠️ ROS unconnected!");
+            }
+        };
+    </script>
+
+    <!-- ROS basic logic -->
+    <script>
+        let ros;
+        let cmdPub, logSub;
+        let reconnectTimer = null;
+
+        // Update connection indicator
+        function updateServerStatus(connected) {
+            const statusLight = document.getElementById("server-status");
+            if (!statusLight) return;
+
+            if (connected) {
+                statusLight.classList.remove("disconnected");
+                statusLight.classList.add("connected");
+                statusLight.title = "ROS Server Connected";
+            } else {
+                statusLight.classList.remove("connected");
+                statusLight.classList.add("disconnected");
+                statusLight.title = "ROS Server Disconnected";
+            }
+        }
+
+        function connectROS() {
+            if (ros && isConnected) return;
+            console.log("🔄 Connecting to ROS WebSocket...");
+
+            ros = new ROSLIB.Ros({ url: "ws://localhost:9091" });
+
+            ros.on("connection", () => {
+                console.log("✅ ROS WebSocket Connected.");
+                isConnected = true;
+                clearInterval(reconnectTimer);
+                reconnectTimer = null;
+                updateServerStatus(true);
+                setupTopics();
+            });
+
+            ros.on("error", (err) => {
+                console.warn("❌ ROS failed to connect:", err.message || err);
+                isConnected = false;
+                updateServerStatus(false);
+            });
+
+            ros.on("close", () => {
+                console.warn("⚠️ ROS connection closed，retry in 5s...");
+                isConnected = false;
+                updateServerStatus(false);
+                if (!reconnectTimer) {
+                    reconnectTimer = setInterval(connectROS, 3000);
+                }
+            });
+        }
+
+        function setupTopics() {
+            console.log("🔧 Initializing ROS topics...");
+
+            cmdPub = new ROSLIB.Topic({
+                ros: ros,
+                name: "/agent_node/user_command",
+                messageType: "std_msgs/String"
+            });
+
+            if (logSub) {
+                logSub.unsubscribe();
+            }
+
+            logSub = new ROSLIB.Topic({
+                ros: ros,
+                name: "/agent_node/agent_log",
+                messageType: "std_msgs/String"
+            });
+
+            logSub.subscribe((msg) => {
+                try {
+                    const data = JSON.parse(msg.data);
+                    const role = data.role || "assistant";
+                    const type = data.type || "Answer";
+                    const content = data.content;
+
+                    let displayText = "";
+                    if (typeof content === "object" && content !== null) {
+                        if (type === "Output") {
+                            const action = JSON.stringify(content.action);
+                            const action_input = JSON.stringify(content.action_input);
+                            displayText = `${content.message} \n🧰 Tool: ${action}  📦 Params: ${action_input}`;
+                        } else {
+                            displayText = JSON.stringify(content);
+                        }
+                    } else {
+                        displayText = String(content);
+                    }
+
+                    addMessage(role, displayText, type);
+                } catch (e) {
+                    console.warn("Log error:", e);
+                }
+            });
+        }
+
+        window.addEventListener("load", () => {
+            updateServerStatus(false);
+            connectROS();
+        });
+
+    </script>
+
+    <!-- Left bottom: image display -->
+    <script src="https://cdn.jsdelivr.net/npm/roslib/build/roslib.min.js"></script>
+    <script>
+        const myros = new ROSLIB.Ros({ url: "ws://localhost:9091" }); // ROSBridge address
+
+        const cameraSelect = document.getElementById("camera-select");
+        const cameraFeed = document.getElementById("camera-feed");
+        const refreshBtn = document.getElementById("refresh-btn");
+
+        function updateCameraList() {
+            myros.getTopics((topicsInfo) => {
+                const topics = topicsInfo.topics;
+                const types = topicsInfo.types;
+
+                cameraSelect.innerHTML = "";
+                const cameraTopics = topics.filter((t, i) => types[i].includes("sensor_msgs/Image"));
+
+                if (cameraTopics.length === 0) {
+                    showPlaceholder();
+                    addOption("No camera topic detected", true);
+                    return;
+                }
+
+                let validTopics = [];
+                let checked = 0;
+
+                cameraTopics.forEach((topic) => {
+                    const listener = new ROSLIB.Topic({
+                        ros: myros,
+                        name: topic,
+                        messageType: "sensor_msgs/Image",
+                    });
+
+                    let gotMsg = false;
+                    listener.subscribe(() => {
+                        gotMsg = true;
+                        listener.unsubscribe();
+                        validTopics.push(topic);
+                        checked++;
+                        if (checked === cameraTopics.length) updateUI(validTopics);
+                    });
+
+                    setTimeout(() => {
+                        listener.unsubscribe();
+                        if (!gotMsg) console.warn("🚫 No data topic:", topic);
+                        checked++;
+                        if (checked === cameraTopics.length) updateUI(validTopics);
+                    }, 800);
+                });
+
+                function updateUI(validTopics) {
+                    cameraSelect.innerHTML = "";
+                    if (validTopics.length === 0) {
+                        showPlaceholder();
+                        addOption("No camera topic detected", true);
+                        return;
+                    }
+                    validTopics.forEach((t, i) => {
+                        addOption(t, false);
+                        if (i === 0) {
+                            cameraSelect.value = t;
+                            showNormalFeed(`http://localhost:8080/stream?topic=${t}&t=${Date.now()}`);
+                        }
+                    });
+                }
+
+                function addOption(text, disabled) {
+                    const opt = document.createElement("option");
+                    opt.textContent = text;
+                    opt.disabled = disabled;
+                    if (!disabled) opt.value = text;
+                    cameraSelect.appendChild(opt);
+                }
+            });
+        }
+
+        myros.on('connection', () => {
+            console.log("✅ ROSBridge connected");
+            updateCameraList();
+        });
+
+        myros.on('error', (err) => console.error("ROSBridge error:", err));
+        myros.on('close', () => console.warn("ROSBridge disconnected"));
+
+        cameraSelect.addEventListener("change", () => {
+            const topic = cameraSelect.value;
+            if (topic) {
+                showNormalFeed(`http://localhost:8080/stream?topic=${topic}&t=${Date.now()}`);
+            } else {
+                showPlaceholder();
+            }
+        });
+
+        refreshBtn.addEventListener("click", () => {
+            console.log("🔄 refresh the topic list...");
+
+            if (myros.isConnected) {
+                myros.close();
+                setTimeout(() => {
+                    myros.connect("ws://localhost:9091");
+                }, 500);
+            } else {
+                myros.connect("ws://localhost:9091");
+            }
+        });
+
+        function showNormalFeed(url) {
+            const img = document.getElementById("camera-feed");
+            img.src = url;
+            img.style.filter = "brightness(1) blur(0)";
+            img.style.transition = "filter 0.2s ease";
+        }
+
+        function showPlaceholder() {
+            const img = document.getElementById("camera-feed");
+            img.src = "./mylogo.png";
+            img.style.objectFit = "contain";
+            img.style.height = "400px";
+            img.style.filter = "brightness(0.9) blur(2px)";
+            img.style.transition = "filter 0.2s ease";
+        }
+
+        function handleCameraError() {
+            console.warn("📷 Image load failed, switching to placeholder");
+            showPlaceholder();
+        }
+    </script>
+</body>
+
+</html>

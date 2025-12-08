@@ -1,0 +1,61 @@
+{
+  "buttons": [
+    {
+      "label": "RosBridge",
+      "cmd": "roslaunch rosbridge_server rosbridge_websocket.launch",
+      "args": "port:=9091"
+    },
+    {
+      "label": "VideoServer",
+      "cmd": "rosrun web_video_server web_video_server"
+    },
+    {
+      "label": "LEO-RobotAgent",
+      "cmd": "source ./devel/setup.bash && rosrun agent api_agent.py"
+    },
+    {
+      "label": "Vision",
+      "cmd": "source ./devel/setup.bash && rosrun agent vision.py"
+    },
+    {
+      "label": "QGC",
+      "cmd": "cd && ./QGroundControl.AppImage"
+    },
+    {
+      "label": "UAV sim",
+      "cmd": "roslaunch px4 mavros_posix_sitl.launch"
+    },
+    {
+      "label": "UAV fly",
+      "cmd": "source ./devel/setup.bash && rosrun agent fly.py"
+    },
+    {
+      "label": "Car sim",
+      "cmd": "source ./devel/setup.bash && roslaunch armcar_moveit_config demo_gazebo.launch"
+    },
+    {
+      "label": "Car ctrl",
+      "cmd": "source ./devel/setup.bash && rosrun agent car_ctrl.py"
+    },
+    {
+      "label": "Arm ctrl",
+      "cmd": "source ./devel/setup.bash && rosrun agent arm_ctrl.py"
+    },
+    {
+      "label": "Dog sim",
+      "cmd": "source ./devel/setup.bash && roslaunch unitree_guide gazeboSim.launch"
+    },
+    {
+      "label": "Dog joint",
+      "cmd": "./devel/lib/unitree_guide/junior_ctrl"
+    },
+    {
+      "label": "Dog ctrl",
+      "cmd": "source ./devel/setup.bash && rosrun agent dog_ctrl.py"
+    },
+    {
+      "label": "Follow cam",
+      "cmd": "source ./devel/setup.bash && rosrun agent follow_cam.py"
+    }
+  ]
+}

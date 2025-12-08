@@ -1,0 +1,58 @@
+{
+  "tools": [
+    {
+      "activation": true,
+      "name": "uav_fly",
+      "func": "uav_fly",
+      "description": "Input: a dictionary with x, y, z coordinates and yaw (°). Used to move the drone to the specified position and orientation. Returns True on success."
+    },
+    {
+      "activation": false,
+      "name": "car_run",
+      "func": "car_run",
+      "description": "Input: a dictionary with x, y coordinates and yaw (°). Used to move the car to the specified position and orientation. Returns True on success."
+    },
+    {
+      "activation": false,
+      "name": "arm_grasp",
+      "func": "arm_grasp",
+      "description": "Input: string 'grasp' to let the robotic arm pick up the object in front. Input 'put' to place the object back. Returns True on success."
+    },
+    {
+      "activation": false,
+      "name": "dog_run",
+      "func": "dog_run",
+      "description": "Input: a dictionary with x, y coordinates. Used to move the robot dog to the specified position and orientation. Returns True on success."
+    },
+    {
+      "activation": false,
+      "name": "vlm",
+      "func": "vlm",
+      "description": "No input. Captures an image from the drone camera and uses a vision-language model to return a text description of the environment, but without accurate coordinates."
+    },
+    {
+      "activation": true,
+      "name": "object_detection",
+      "func": "object_detection",
+      "description": "No input. Captures an image from the camera and uses an object detection model to return a text description of the environment. world_coordinates = nan means the object is far away. If no objects are detected, the environment simply has none; this is normal."
+    },
+    {
+      "activation": false,
+      "name": "object_detection_json",
+      "func": "object_detection_json",
+      "description": "No input. Captures an image from the camera and returns JSON dictionary data from the object detection model. The field ['objects'] is a list, and each element's ['name'] and ['world_coordinates'] represent the object's name and position. world_coordinates = nan means the object is far away."
+    },
+    {
+      "activation": false,
+      "name": "speak",
+      "func": "speak",
+      "description": "Input: a text string. The drone uses its speaker to output the audio. Returns True on success."
+    },
+    {
+      "activation": false,
+      "name": "listen",
+      "func": "listen",
+      "description": "No input. The drone listens to the environment and returns the recognized text."
+    }
+  ]
+}

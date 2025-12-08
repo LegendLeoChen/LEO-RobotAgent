@@ -1,0 +1,10 @@
+**/build/**
+**/.vscode/**
+**/devel/**
+**/__pycache__/**
+.catkin_workspace
+**/unitree_guide/**
+**/unitree_ros/**
+**/unitree_ros_to_real/**
+**.pt
+**/.idea/**

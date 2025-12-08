@@ -1,0 +1,650 @@
+:root[data-theme="light"] {
+    --color1: #a59ef1;
+    /* 主色调 */
+    --color2: #af76ec;
+    /* 次要色调 */
+    --color3: #bdd1dd;
+    /* 浅色背景 */
+    --color4: #FED2E2;
+    /* 深色背景 */
+    --color5: #060230;
+    /* 文字颜色 */
+    --color6: #f881ad;
+    /* 大背景 */
+}
+
+:root[data-theme="light"] {
+    --color1: #775cd8;
+    /* 主色调 */
+    --color2: #5089f3;
+    /* 次要色调 */
+    --color3: #f0d2ee;
+    /* 浅色背景 */
+    --color4: #75d3ce;
+    /* 深色背景 */
+    --color5: #060230;
+    /* 文字颜色 */
+    --color6: #c0def0;
+    /* 大背景 */
+}
+
+:root[data-theme="dark"] {
+  --color1: #E23E57; /* 主色调 */
+  --color2: #88304E; /* 次要色调 */
+  --color3: #522546; /* 浅色背景 */
+  --color4: #311D3F; /* 深色背景 */
+  --color5: #f2f5c1; /* 文字颜色 */
+  --color6: #1d0e27; /* 大背景 */
+}
+
+body {
+    font-family: "Microsoft Yahei", sans-serif;
+    background-color: var(--color6);
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    transition: all 0.2s ease;
+}
+
+button {
+    background-color: var(--color2);
+    color: var(--color5);
+    border-radius: 6px;
+    border: none;
+}
+
+button:hover {
+    background-color: var(--color1);
+}
+
+/* WebKit 内核（Chrome、Edge、Safari） */
+*::-webkit-scrollbar {
+    width: 8px;
+    /* 滚动条宽度 */
+    height: 8px;
+    /* 横向滚动条高度 */
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--color6);
+    /* 滚动条轨道背景 */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color1);
+    /* 滚动条滑块颜色 */
+    border-radius: 4px;
+    /* 圆角 */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color2);
+    /* 悬停颜色 */
+}
+
+#modeToggle {
+    background: var(--color4);
+    border: 1px solid var(--color1);
+    margin-left: 10px;
+    border-radius: 1000px;
+    font-size: 25px;
+    color: var(--color5);
+}
+
+#modeToggle:hover {
+    background: var(--color2);
+}
+
+#left-bar {
+    display: flex;
+    overflow-y: auto;
+    flex: 0 0 45%;
+    background: var(--color6);
+    border-right: 2px var(--color2) dashed;
+    padding: 10px;
+    padding-right: 20px;
+    flex-direction: column;
+}
+
+#control h3,
+#camera h3,
+#tools-panel h3 {
+    margin-top: 0;
+    display: flex;
+    text-align: left;
+    margin-left: 0;
+    color: var(--color5);
+    background: var(--color4);
+    font-size: 18px;
+}
+
+#control,
+#camera,
+#tools-panel {
+    border: 1px solid var(--color1);
+    border-radius: 10px;
+    background: var(--color4);
+    padding: 10px 8px 15px 15px;
+    box-shadow: 4px 8px 8px var(--color5);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    /* 添加过渡效果 */
+    will-change: box-shadow, transform;
+    /* 提示浏览器优化这些属性 */
+}
+
+#camera {
+    padding-right: 22px;
+}
+
+#control:hover,
+#camera:hover,
+#tools-panel:hover {
+    box-shadow: 4px 12px 16px var(--color5);
+    /* 增大阴影，增强浮动效果 */
+    transform: translateY(-2px);
+    /* 向上移动5px，产生浮动感 */
+}
+
+#add-btn {
+    display: inline-block !important;
+    /* 和文字在一行 */
+    height: 30px !important;
+    width: 30px !important;
+    /* 自动宽度，不占 30% */
+    padding: 2px 6px !important;
+    /* 小按钮 */
+    margin: 0px 10px !important;
+    background-color: var(--color3) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+#add-btn:hover {
+    background-color: var(--color2) !important;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 8px 8px;
+    border-radius: 50%;
+    background-color: var(--color1);
+    vertical-align: middle;
+    transition: background-color 0.2s ease;
+}
+
+.status-indicator.connected {
+    background-color: #2ECC29;
+    /* 绿色 */
+}
+
+.status-indicator.disconnected {
+    background-color: #E74C3C;
+    /* 红色 */
+}
+
+#task-buttons {
+    display: flex;
+    /* 使用 flex 布局 */
+    flex-wrap: wrap;
+    /* 自动换行 */
+    gap: 4px;
+    /* 按钮之间的间距 */
+}
+
+#task-buttons button {
+    padding: 8px 12px;
+    width: 19%;
+    background-color: var(--color3);
+    border: 1px solid var(--color1);
+    color: var(--color5);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+#task-buttons button:hover {
+    background-color: var(--color2);
+}
+
+#camera button {
+    display: inline-block !important;
+    height: 30px !important;
+    width: 30px !important;
+    padding: 2px 6px !important;
+    margin: 0px 10px !important;
+    background-color: var(--color3) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+#camera button:hover {
+    background-color: var(--color2) !important;
+}
+
+#camera-select {
+    margin-top: 0px;
+    min-width: 60%;
+    max-width: 100%;
+    font-size: 16px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color2);
+    background-color: var(--color3);
+    color: var(--color5);
+}
+
+#camera-feed {
+    border-radius: 10px;
+    border: 2px dashed var(--color1);
+    margin-top: 1px;
+    width: 100%;
+    height: auto;
+    background-color: var(--color6);
+}
+
+#tools-panel {
+    font-size: 14px;
+    margin-top: 20px;
+    padding-right: 18px;
+}
+
+#tools-container {
+    max-height: 300px;
+    /* 可滚动区域 */
+    overflow-y: auto;
+    border-radius: 2px;
+    border: 2px dashed var(--color1);
+}
+
+#tools-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tools-table th,
+#tools-table td {
+    padding: 6px 10px;
+    border: 1px solid var(--color1);
+    text-align: left;
+    color: var(--color5);
+}
+
+#tools-table th {
+    background: var(--color3);
+    border-bottom: 1px solid var(--color1);
+    position: sticky;
+    white-space: nowrap;
+    top: 0;
+    z-index: 1;
+    text-align: center;
+}
+
+#tools-table tr {
+    background-color: var(--color6);
+}
+
+#tools-table tr:hover {
+    background-color: var(--color3);
+}
+
+.editable {
+    cursor: pointer;
+}
+
+.tools-actions {
+    margin-top: 10px;
+    text-align: right;
+}
+
+/* 普通状态的编辑框 */
+td input[type="text"],
+td textarea {
+    width: 95%;
+    padding: 4px 6px;
+    border: 0;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: var(--color4);
+    color: var(--color5);
+    transition: all 0.2s ease;
+}
+
+/* 聚焦（正在编辑）时的样式 */
+td input[type="text"]:focus,
+td textarea:focus {
+    background-color: var(--color4);
+    outline: none;
+}
+
+/* 可选：让被编辑的单元格有轻微高亮 */
+td:has(input:focus),
+td:has(textarea:focus) {
+    background-color: var(--color4);
+    transition: background-color 0.2s ease;
+}
+
+#add-tool,
+#save-tools {
+    padding: 6px 10px;
+    margin-left: 8px;
+}
+
+#main {
+    flex: 1;
+    border: 1px solid var(--color1);
+    border-radius: 10px;
+    background: var(--color4);
+    margin: 10px 10px 10px 15px;
+    padding: 10px 20px 15px 15px;
+    box-shadow: 4px 8px 8px var(--color5);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+#main h3 {
+    margin-top: 0;
+    display: flex;
+    text-align: left;
+    margin-left: 0;
+    color: var(--color5);
+    font-size: 18px;
+}
+
+#chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: var(--color3);
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px dashed var(--color1);
+}
+
+.chat-msg {
+    margin: 8px 0;
+    display: flex;
+}
+
+.chat-msg.user {
+    justify-content: flex-end;
+}
+
+.chat-bubble {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 12px;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.user .chat-bubble {
+    background-color: var(--color1);
+    color: #000;
+}
+
+.assistant .chat-bubble {
+    background-color: #2ECC29;
+    color: #000;
+}
+
+#input-area {
+    display: flex;
+    margin-top: 10px;
+}
+
+#input-wrapper {
+    position: relative;
+    width: 90%;
+    flex-grow: 1;
+}
+
+#user-input {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+    color: var(--color5);
+    background-color: var(--color3);
+    border: 1px solid var(--color1);
+    border-radius: 8px;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.4em;
+    max-height: 150px;
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+/* 🟢 建议列表显示在输入框上方 */
+#predefined-tasks {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%; /* 放在上面 */
+    background-color: var(--color3);
+    border: 1px solid var(--color1);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    z-index: 10;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#predefined-tasks li {
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    border-bottom: 1px dotted var(--color1);
+    text-overflow: ellipsis;
+    color: var(--color5);
+}
+
+#predefined-tasks li:hover {
+    background-color: var(--color2);
+}
+
+#send-btn {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: var(--color2);
+    border: none;
+    font-size: 15px;
+    color: var(--color5);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#send-btn:hover {
+    background-color: var(--color1);
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color5);
+}
+
+.popup-content {
+    background: var(--color4);
+    padding: 10px 40px 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px var(--color5);
+    width: 500px;
+}
+
+.popup-content input {
+    width: 100%;
+    height: 30px;
+    padding: 5px 8px;
+    border: 2px solid var(--color1);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: var(--color5);
+    background-color: var(--color3);
+}
+
+.popup-content input:focus {
+    /* 自定义焦点时的边框颜色（示例：更深的紫色） */
+    border-color: var(--color2);
+    /* 可选：移除默认焦点outline（浏览器自带的蓝色边框） */
+    outline: none;
+    /* 可选：添加阴影增强焦点效果 */
+    box-shadow: 0 0 0 1px var(--color1);
+    /* 其他可自定义样式：如背景色、文字颜色等 */
+    /* background-color: #f9f0f9; */
+}
+
+.popup-content button {
+    padding: 10px 15px;
+    background-color: var(--color2);
+    margin-right: 10px;
+    font-size: 15px;
+    border: none;
+    color: var(--color5);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: var(--color1);
+}
+
+.toast {
+    position: fixed;
+    top: 4%;
+
+    .popup-content button {
+        padding: 10px 15px;
+        background-color: var(--color2);
+        margin-right: 10px;
+        font-size: 15px;
+        border: none;
+        color: var(--color5);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* ✅ 中间偏上 */
+    left: 45%;
+    transform: translateX(-50%);
+    background: var(--color6);
+    color: var(--color5);
+    padding: 12px 20px;
+    border: 2px solid var(--color1);
+    box-shadow: 0 4px 12px var(--color2);
+    border-radius: 10px;
+    font-size: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease,
+    transform 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 4px 12px var(--color5);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    /* 从略下方淡入 */
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: 12px;
+    background-color: #E74C34;
+    /* 默认红色 */
+    vertical-align: middle;
+}
+
+.status-indicator.active {
+    background-color: #2ECC29;
+    /* 运行时绿色 */
+}
+
+#tool-usage {
+    margin-left: 10px;
+    padding: 2px 0px 0 3px;
+    background-color: var(--color3);
+    height: 28px;
+    width: 28px;
+    vertical-align: middle;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer; 
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    font-weight: bold;
+    color: #0078d7;
+}
+
+/* tooltip 内容 */
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%; /* 在上方显示 */
+    transform: translateX(-50%);
+    background-color: var(--color6);
+    color: var(--color5);
+    border-color: var(--color1);
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    font-size: 13px;
+    box-shadow: 0 2px 4px var(--color5);
+}
+
+/* 小箭头 */
+.tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--color1) transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+/* 悬停时显示 tooltip */
+.tooltip:hover::after,
+.tooltip:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+}

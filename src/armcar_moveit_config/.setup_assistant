@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: offboard
+    relative_path: model/arm_car.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/arm_car.srdf
+  CONFIG:
+    author_name: LeoChen
+    author_email: m18359779896@163.com
+    generated_timestamp: 1759062085
