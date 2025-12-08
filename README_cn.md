@@ -1,5 +1,5 @@
 # LEO-RobotAgent
-论文：LEO-RobotAgent: A General-purpose Robotic Agent as an LLMs-based Embodied Operator.
+论文：LEO-RobotAgent: A General-purpose Robotic Agent for Language-driven Embodied Operator
 
 [English README](./README.md)
 
