@@ -7,17 +7,13 @@ Paper: LEO-RobotAgent: A General-purpose Robotic Agent as an LLMs-based Embodied
 
 LEO-RobotAgent is a general-purpose robotic intelligent agent framework based on Large Language Models (LLMs). Under this framework, LLMs can operate **different types of robots** in **various scenarios** to complete **unpredictable complex tasks**, demonstrating high generalizability and robustness.
 
-<div align="center">
-  <img src="./docs/agent_detail.svg" alt="agent_detail" />
-</div>
+![agent_detail](./docs/agent_detail.png)
 
 The LLM-based general-purpose robotic agent framework, LEO-RobotAgent, is shown in the figure above. The large model can autonomously think, plan, and act within this clear framework. We provide a modular and easily registrable collection of tools, enabling the LLM to flexibly invoke various tools according to different needs. At the same time, the framework provides a human-computer interaction mechanism, allowing the algorithm to collaborate with humans like a partner.
 
 The LLM relies on preset prompts and user tasks to output information, actions, and action parameters. The tool collection can cover various domains based on actual situations, requiring basic information such as enable status, tool name, corresponding function, and tool description. Observations provide varied feedback content depending on the tool. During the loop, the History is continuously accumulated for subsequent operations by the LLM.
 
-<div align="center">
-  <img src="./docs/agent_system.svg" alt="agent_system" />
-</div>
+![agent_system](./docs/agent_system.png)
 
 The figure above shows an application system designed around LEO-RobotAgent. We built this complete system based on ROS and Web technologies. Users can directly operate the visual interface to configure existing tools, converse and interact with the Agent, monitor topics, etc. The system is easy to extend and get started with in terms of tool registration and node management.
 
