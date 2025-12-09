@@ -179,7 +179,7 @@ class VisionNode:
             base_url=os.getenv("OPENAI_BASE_URL"),
         )
         completion = client.chat.completions.create(
-            model="qwen-vl-plus",  # Model list
+            model="qwen3-vl-plus",  # Model list
             messages=[{"role": "user","content": [
                     {"type": "image_url",
                     "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}},

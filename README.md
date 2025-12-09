@@ -18,6 +18,11 @@ The LLM relies on preset prompts and user tasks to output information, actions, 
 The figure above shows an application system designed around LEO-RobotAgent. We built this complete system based on ROS and Web technologies. Users can directly operate the visual interface to configure existing tools, converse and interact with the Agent, monitor topics, etc. The system is easy to extend and get started with in terms of tool registration and node management.
 
 ## Demonstration
+
+[![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
+
+The demonstration video above presents four sets of experiments, namely basic features verification, real UAV experiment, UAV urban searching experiment, and long-horizon task experiment with the wheeled robot equipped with the robotic arm.
+
 ![effect](./docs/sim2real.png)
 
 The simulation and corresponding real-world experiments are shown above. An example of the Agent's operation process and output during a task can be found in [this file](./docs/agent_run.txt).

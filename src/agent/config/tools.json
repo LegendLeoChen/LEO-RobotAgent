@@ -25,13 +25,13 @@
       "description": "Input: a dictionary with x, y coordinates. Used to move the robot dog to the specified position and orientation. Returns True on success."
     },
     {
-      "activation": false,
+      "activation": true,
       "name": "vlm",
       "func": "vlm",
       "description": "No input. Captures an image from the drone camera and uses a vision-language model to return a text description of the environment, but without accurate coordinates."
     },
     {
-      "activation": true,
+      "activation": false,
       "name": "object_detection",
       "func": "object_detection",
       "description": "No input. Captures an image from the camera and uses an object detection model to return a text description of the environment. world_coordinates = nan means the object is far away. If no objects are detected, the environment simply has none; this is normal."

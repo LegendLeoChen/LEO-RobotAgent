@@ -18,6 +18,11 @@ LEO-RobotAgent是一种基于大模型的通用机器人智能代理框架，该
 上图是一个围绕LEO-RobotAgent设计的应用系统。我们基于ROS和Web技术为本框架搭建了这个完整的系统。用户可以直接操作可视化界面配置现有工具、与Agent进行对话和交互、对话题进行监看等，该系统在工具注册、节点启停等方面都易于扩展和上手。
 
 ## 效果演示
+
+[![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
+
+演示视频如上，分别进行了基础功能验证、实机无人机实验、无人机城市搜索实验、带机械臂的轮式机器人长任务实验。
+
 ![effect](./docs/sim2real.png)
 
 仿真和对应的实机实验如上图，Agent在任务中的运作过程和输出的示例在[该文件中](./docs/agent_run.txt)。
