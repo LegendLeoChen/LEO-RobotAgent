@@ -1,6 +1,8 @@
 # LEO-RobotAgent
 Paper: LEO-RobotAgent: A General-purpose Robotic Agent for Language-driven Embodied Operator
 
+[![arXiv](https://img.shields.io/badge/arXiv-2512.10605-b31b1b.svg)](https://arxiv.org/abs/2512.10605)
+
 [中文 README](./README_cn.md)
 
 ## Introduction
@@ -243,4 +245,16 @@ source ./devel/setup.bash && roslaunch unitree_guide gazeboSim.launch
 
 # Dog Control Node
 source ./devel/setup.bash && rosrun agent dog_ctrl.py
+```
+
+# 🔥Ciation
+If you find this project useful in your research, please consider citing:
+
+```bibtex
+@article{chen2025leorobotagent,
+  title={LEO-RobotAgent: A General-purpose Robotic Agent for Language-driven Embodied Operator},
+  author={Chen, Lihuang and Luo, Xiangyu and Meng, Jun},
+  journal={arXiv preprint arXiv:2512.10605}, 
+  year={2025}
+}
 ```
