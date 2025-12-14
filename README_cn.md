@@ -1,7 +1,7 @@
 # LEO-RobotAgent
 论文：LEO-RobotAgent: A General-purpose Robotic Agent for Language-driven Embodied Operator
 
-<!-- [![arXiv](https://img.shields.io/badge/arXiv-2512.10605-b31b1b.svg)](https://arxiv.org/abs/2512.10605) -->
+[![arXiv](https://img.shields.io/badge/arXiv-2512.10605-b31b1b.svg)](https://arxiv.org/abs/2512.10605)
 
 [English README](./README.md)
 
@@ -21,9 +21,9 @@ LEO-RobotAgent是一种基于大模型的通用机器人智能代理框架，该
 
 ## 效果演示
 
-<!-- [![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
+[![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
 
-演示视频如上，分别进行了基础功能验证、实机无人机实验、无人机城市搜索实验、带机械臂的轮式机器人长任务实验。 -->
+演示视频如上，分别进行了基础功能验证、实机无人机实验、无人机城市搜索实验、带机械臂的轮式机器人长任务实验。
 
 ![effect](./docs/sim2real.png)
 
@@ -247,7 +247,7 @@ source ./devel/setup.bash && roslaunch unitree_guide gazeboSim.launch
 source ./devel/setup.bash && rosrun agent dog_ctrl.py
 ```
 
-<!-- # 🔥引用
+# 🔥引用
 如果您发现该工作为您的研究提供了帮助，可以通过以下方式引用：
 
 ```bibtex
@@ -257,4 +257,4 @@ source ./devel/setup.bash && rosrun agent dog_ctrl.py
   journal={arXiv preprint arXiv:2512.10605}, 
   year={2025}
 }
-``` -->
+```
