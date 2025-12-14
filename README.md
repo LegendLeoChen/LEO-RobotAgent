@@ -1,7 +1,7 @@
 # LEO-RobotAgent
 Paper: LEO-RobotAgent: A General-purpose Robotic Agent for Language-driven Embodied Operator
 
-[![arXiv](https://img.shields.io/badge/arXiv-2512.10605-b31b1b.svg)](https://arxiv.org/abs/2512.10605)
+<!-- [![arXiv](https://img.shields.io/badge/arXiv-2512.10605-b31b1b.svg)](https://arxiv.org/abs/2512.10605) -->
 
 [中文 README](./README_cn.md)
 
@@ -21,9 +21,9 @@ The figure above shows an application system designed around LEO-RobotAgent. We 
 
 ## Demonstration
 
-[![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
+<!-- [![Watch the video](./docs/cover.png)](https://youtu.be/f0-ZOk4GSFY)
 
-The demonstration video above presents four sets of experiments, namely basic features verification, real UAV experiment, UAV urban searching experiment, and long-horizon task experiment with the wheeled robot equipped with the robotic arm.
+The demonstration video above presents four sets of experiments, namely basic features verification, real UAV experiment, UAV urban searching experiment, and long-horizon task experiment with the wheeled robot equipped with the robotic arm. -->
 
 ![effect](./docs/sim2real.png)
 
@@ -247,7 +247,7 @@ source ./devel/setup.bash && roslaunch unitree_guide gazeboSim.launch
 source ./devel/setup.bash && rosrun agent dog_ctrl.py
 ```
 
-# 🔥Ciation
+<!-- # 🔥Ciation
 If you find this project useful in your research, please consider citing:
 
 ```bibtex
@@ -257,4 +257,4 @@ If you find this project useful in your research, please consider citing:
   journal={arXiv preprint arXiv:2512.10605}, 
   year={2025}
 }
-```
+``` -->
